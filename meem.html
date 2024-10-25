@@ -20,7 +20,6 @@
 <body>
     <h1>Random Meme Generator</h1>
     <div id="imagesContainer"></div>
-    <button id="downloadBtn">Download All Images</button>
     <button id="readyBtn">Ready to Edit</button>
 
     <script>
@@ -68,17 +67,6 @@
                 imagesContainer.appendChild(img);
             });
         }
-
-        document.getElementById('downloadBtn').addEventListener('click', () => {
-            selectedFiles.forEach((url) => {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = url.split('/').pop(); // Use image name as the download filename
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            });
-        });
 
         document.getElementById('readyBtn').addEventListener('click', () => {
             const firstImageUrl = selectedFiles[0]; // Get the first image for editing
