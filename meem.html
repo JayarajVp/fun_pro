@@ -1,108 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meme Generator</title>
-  <script type="module">
-    // List of image URLs from your GitHub repository
-    const imageUrls = [
-      'https://raw.githubusercontent.com/your-username/your-repo/main/images/image1.jpg',
-      'https://raw.githubusercontent.com/your-username/your-repo/main/images/image2.jpg',
-      'https://raw.githubusercontent.com/your-username/your-repo/main/images/image3.jpg',
-      'https://raw.githubusercontent.com/your-username/your-repo/main/images/image4.jpg',
-      'https://raw.githubusercontent.com/your-username/your-repo/main/images/image5.jpg',
-      // Add more image URLs as needed
-    ];
-
-    let selectedImageUrl = ''; // Store the URL of the selected image for redirection
-
-    // Fetch random images from the predefined list
-    function getRandomImages() {
-      const container = document.getElementById('imagesContainer');
-      const selectedFiles = [];
-
-      while (selectedFiles.length < 5) {
-        const randomIndex = Math.floor(Math.random() * imageUrls.length);
-        if (!selectedFiles.includes(imageUrls[randomIndex])) {
-          selectedFiles.push(imageUrls[randomIndex]);
-        }
-      }
-
-      for (const url of selectedFiles) {
-        const img = document.createElement('img');
-        img.src = url;
-        img.onclick = () => {
-          selectedImageUrl = url; // Set the selected image URL
-          highlightImage(img);
-        };
-        container.appendChild(img);
-      }
-    }
-
-    // Highlight selected image
-    function highlightImage(selectedImg) {
-      const images = document.querySelectorAll('#imagesContainer img');
-      images.forEach(img => img.style.border = 'none'); // Reset borders
-      selectedImg.style.border = '2px solid yellow'; // Highlight selected image
-    }
-
-    // Download all displayed images
-    document.getElementById('downloadBtn').addEventListener('click', () => {
-      const images = document.querySelectorAll('#imagesContainer img');
-      images.forEach((img, index) => {
-        const a = document.createElement('a');
-        a.href = img.src;
-        a.download = `image_${index + 1}.jpg`;
-        a.click();
-      });
-    });
-
-    // Redirect to Canva for editing
-    document.getElementById('readyBtn').addEventListener('click', () => {
-      if (selectedImageUrl) {
-        const canvaEditUrl = `https://www.canva.com/create/memes/?image=${encodeURIComponent(selectedImageUrl)}`;
-        window.open(canvaEditUrl, '_blank');
-      } else {
-        alert('Please select an image to edit.');
-      }
-    });
-
-    // Call the function to load images
-    getRandomImages();
-  </script>
-  <style>
-    body {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-    .images {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin: 20px;
-    }
-    img {
-      max-width: 200px;
-      border: 2px solid white;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-    button {
-      margin: 10px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <style>
+        /* Add your styles here */
+    </style>
 </head>
 <body>
-  <h1>Meme Generator</h1>
-  <div class="images" id="imagesContainer"></div>
-  <button id="downloadBtn">Download All Images</button>
-  <button id="readyBtn">Ready to Edit</button>
+    <h1>Random Meme Generator</h1>
+    <div id="imagesContainer"></div>
+    <button id="downloadBtn">Download All Images</button>
+    <button id="readyBtn">Ready to Edit</button>
+
+    <script>
+        const imageUrls = [
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.41%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.42%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.42%20PM%20(2).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.42%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.43%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.43%20PM%20(2).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.43%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.44%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.44%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.45%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.45%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.46%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.47%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.47%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.48%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.48%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.49%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.49%20PM.jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.50%20PM%20(1).jpeg',
+            'https://raw.githubusercontent.com/JayarajVp/fun_pro/main/images/WhatsApp%20Image%202024-10-25%20at%207.49.50%20PM.jpeg'
+        ];
+
+        const selectedFiles = [];
+
+        function getRandomImages() {
+            while (selectedFiles.length < 5) {
+                const randomIndex = Math.floor(Math.random() * imageUrls.length);
+                if (!selectedFiles.includes(imageUrls[randomIndex])) {
+                    selectedFiles.push(imageUrls[randomIndex]);
+                }
+            }
+            displayImages();
+        }
+
+        function displayImages() {
+            const imagesContainer = document.getElementById('imagesContainer');
+            imagesContainer.innerHTML = ''; // Clear previous images
+            selectedFiles.forEach((url) => {
+                const img = document.createElement('img');
+                img.src = url;
+                img.style.width = '200px'; // Set width to prevent overflow
+                imagesContainer.appendChild(img);
+            });
+        }
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            selectedFiles.forEach((url) => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = url.split('/').pop(); // Use image name as the download filename
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            });
+        });
+
+        document.getElementById('readyBtn').addEventListener('click', () => {
+            const firstImageUrl = selectedFiles[0]; // Get the first image for editing
+            const canvaUrl = `https://www.canva.com/create/memes/?imageUrl=${encodeURIComponent(firstImageUrl)}`;
+            window.open(canvaUrl, '_blank'); // Open Canva in a new tab
+        });
+
+        // Call the function to get random images when the page loads
+        getRandomImages();
+    </script>
 </body>
 </html>
