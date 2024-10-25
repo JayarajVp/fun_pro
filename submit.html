@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Submit Your Meme</title>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage.js"></script>
+</head>
+<body>
+  <h1>Submit Your Meme</h1>
+  <input type="file" id="file-input" />
+  <button id="upload-button">Upload Meme</button>
+  <p id="status"></p>
+
+  <script>
+    // Firebase configuration (reuse from meem.html)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      databaseURL: "YOUR_DATABASE_URL",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    // Upload file to Firebase Storage
+    document.getElementById('upload-button').addEventListener('click', () => {
+      const file = document.getElementById('file-input').files[0];
+      if (!file) {
+        alert('Please select a file first!');
+        return;
+      }
+
+      const storageRef = storage.ref('memes/' + file.name);
+      storageRef.put(file).then(() => {
+        document.getElementById('status').textContent = 'Upload successful!';
+      }).catch((error) => {
+        document.getElementById('status').textContent = 'Upload failed: ' + error.message;
+      });
+    });
+  </script>
+</body>
+</html>
