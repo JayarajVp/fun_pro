@@ -22,40 +22,45 @@
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    function loadImages() {
+    // Function to download an image by URL
+    async function downloadImage(url) {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = url.split('/').pop(); // Use image name from URL
+      link.click();
+    }
+
+    // Start editing: Download 5 random images and open Canva
+    async function startEditing() {
       const imagesRef = ref(db, 'images');
-      onValue(imagesRef, (snapshot) => {
+
+      onValue(imagesRef, async (snapshot) => {
         const allImages = snapshot.val();
         const urls = Object.values(allImages);
 
+        // Select 5 random images
         const randomImages = urls.sort(() => 0.5 - Math.random()).slice(0, 5);
-        const container = document.getElementById('images-container');
-        container.innerHTML = '';
 
-        randomImages.forEach(url => {
-          const img = document.createElement('img');
-          img.src = url;
-          img.width = 200;
-          img.style.margin = '10px';
-          container.appendChild(img);
-        });
+        // Download each image
+        for (const url of randomImages) {
+          await downloadImage(url);
+        }
+
+        // Open Canva photo editor
+        window.open('https://www.canva.com/photo-editor', '_blank');
       });
     }
 
-    window.onload = loadImages;
-
-    document.getElementById('ready-button').addEventListener('click', () => {
-      const firstImage = document.querySelector('#images-container img');
-      if (firstImage) {
-        const canvaLink = `https://www.canva.com/photo-editor?image=${encodeURIComponent(firstImage.src)}`;
-        window.open(canvaLink, '_blank');
-      }
-    });
+    // Attach event listener to the button
+    window.onload = () => {
+      document.getElementById('start-button').addEventListener('click', startEditing);
+    };
   </script>
 </head>
 <body>
-  <h1>Select an Image to Create a Meme</h1>
-  <div id="images-container"></div>
-  <button id="ready-button">Start Editing</button>
+  <h1>Create Your Meme Challenge</h1>
+  <button id="start-button">Start Editing</button>
 </body>
 </html>
