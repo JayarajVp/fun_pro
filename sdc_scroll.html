@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Like System</title>
+    <title>Meme Gallery</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -14,21 +14,6 @@
             margin: 10px;
             border: 2px solid #ddd;
             border-radius: 4px;
-        }
-        .like-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0;
-        }
-        .like-btn {
-            margin-right: 10px;
-            padding: 5px 10px;
-            background-color: #4CAF50; /* Green */
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
         }
     </style>
     <!-- Include Firebase libraries -->
@@ -57,7 +42,7 @@
             const res = await listAll(storageRef);
             const memeData = await Promise.all(res.items.map(async (itemRef) => {
                 const url = await getDownloadURL(itemRef);
-                return { url: url, likes: 0 };
+                return { url: url }; // Only store the URL
             }));
             displayImages(memeData);
         }
@@ -65,35 +50,11 @@
         function displayImages(memeData) {
             const imagesContainer = document.getElementById('imagesContainer');
             imagesContainer.innerHTML = ''; // Clear previous images
-            memeData.forEach((meme, index) => {
-                const imgContainer = document.createElement('div');
-                imgContainer.classList.add('like-container');
-
+            memeData.forEach(meme => {
                 const img = document.createElement('img');
                 img.src = meme.url;
-
-                const likeBtn = document.createElement('button');
-                likeBtn.className = 'like-btn';
-                likeBtn.textContent = 'Like';
-                likeBtn.addEventListener('click', () => {
-                    meme.likes += 1; // Increase like count
-                    updateLikes(index, meme.likes); // Update displayed likes
-                });
-
-                const likeCount = document.createElement('span');
-                likeCount.id = `likeCount${index}`; // Unique ID for each like count
-                likeCount.textContent = meme.likes;
-
-                imgContainer.appendChild(img);
-                imgContainer.appendChild(likeBtn);
-                imgContainer.appendChild(likeCount);
-                imagesContainer.appendChild(imgContainer);
+                imagesContainer.appendChild(img); // Append the image to the container
             });
-        }
-
-        function updateLikes(index, likes) {
-            const likeCountElement = document.getElementById(`likeCount${index}`);
-            likeCountElement.textContent = likes; // Update the displayed like count
         }
 
         // Call the function to fetch and display images when the page loads
@@ -101,7 +62,7 @@
     </script>
 </head>
 <body>
-    <h1>Meme Like System</h1>
+    <h1>Meme Gallery</h1>
     <div id="imagesContainer"></div>
 </body>
 </html>
