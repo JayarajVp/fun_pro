@@ -27,6 +27,8 @@
     const analytics = getAnalytics(app);
     const storage = getStorage(app);
 
+    let selectedImageUrl = ''; // Store the URL of the selected image for redirection
+
     // Fetch 5 random images from Firebase Storage
     async function getRandomImages() {
       const container = document.getElementById('imagesContainer');
@@ -47,12 +49,20 @@
         const url = await getDownloadURL(file);
         const img = document.createElement('img');
         img.src = url;
+        img.onclick = () => {
+          selectedImageUrl = url; // Set the selected image URL
+          highlightImage(img);
+        };
         container.appendChild(img);
       }
     }
 
-    // Call the function to load images
-    getRandomImages();
+    // Highlight selected image
+    function highlightImage(selectedImg) {
+      const images = document.querySelectorAll('#imagesContainer img');
+      images.forEach(img => img.style.border = 'none'); // Reset borders
+      selectedImg.style.border = '2px solid yellow'; // Highlight selected image
+    }
 
     // Download all displayed images
     document.getElementById('downloadBtn').addEventListener('click', () => {
@@ -65,10 +75,18 @@
       });
     });
 
-    // Redirect to Canva
+    // Redirect to Canva for editing
     document.getElementById('readyBtn').addEventListener('click', () => {
-      window.open('https://www.canva.com/', '_blank');
+      if (selectedImageUrl) {
+        const canvaEditUrl = `https://www.canva.com/create/memes/?image=${encodeURIComponent(selectedImageUrl)}`;
+        window.open(canvaEditUrl, '_blank');
+      } else {
+        alert('Please select an image to edit.');
+      }
     });
+
+    // Call the function to load images
+    getRandomImages();
   </script>
   <style>
     body {
@@ -88,6 +106,7 @@
       max-width: 200px;
       border: 2px solid white;
       border-radius: 8px;
+      cursor: pointer;
     }
     button {
       margin: 10px;
