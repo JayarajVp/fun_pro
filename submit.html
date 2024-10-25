@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Submit Your Meme</title>
   <script type="module">
-    // Import the Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
     import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
       authDomain: "funpro-826c4.firebaseapp.com",
@@ -21,11 +19,9 @@
       measurementId: "G-H5D83MFWMG"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Handle meme submission
     document.getElementById('submit-button').addEventListener('click', async () => {
       const memeUrl = document.getElementById('meme-url').value;
 
@@ -33,10 +29,10 @@
         try {
           await push(ref(db, 'submissions'), { url: memeUrl });
           alert('Meme submitted successfully!');
-          document.getElementById('meme-url').value = ''; // Clear the input field
+          document.getElementById('meme-url').value = '';
         } catch (error) {
           console.error('Error submitting meme:', error);
-          alert('Failed to submit meme. Please try again.');
+          alert('Failed to submit meme.');
         }
       } else {
         alert('Please enter a valid URL.');
@@ -46,7 +42,7 @@
 </head>
 <body>
   <h1>Submit Your Meme</h1>
-  <input type="text" id="meme-url" placeholder="Enter the meme URL" style="width: 80%;" />
+  <input type="text" id="meme-url" placeholder="Enter meme URL" style="width: 80%;" />
   <button id="submit-button">Submit Meme</button>
 </body>
 </html>
