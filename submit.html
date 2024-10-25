@@ -3,46 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Submit Your Meme</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
-      authDomain: "funpro-826c4.firebaseapp.com",
-      databaseURL: "https://funpro-826c4-default-rtdb.firebaseio.com",
-      projectId: "funpro-826c4",
-      storageBucket: "funpro-826c4.appspot.com",
-      messagingSenderId: "402693921355",
-      appId: "1:402693921355:web:e4bd636815173a26cd8bce",
-      measurementId: "G-H5D83MFWMG"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    document.getElementById('submit-button').addEventListener('click', async () => {
-      const memeUrl = document.getElementById('meme-url').value;
-
-      if (memeUrl) {
-        try {
-          await push(ref(db, 'submissions'), { url: memeUrl });
-          alert('Meme submitted successfully!');
-          document.getElementById('meme-url').value = '';
-        } catch (error) {
-          console.error('Error submitting meme:', error);
-          alert('Failed to submit meme.');
-        }
-      } else {
-        alert('Please enter a valid URL.');
-      }
-    });
-  </script>
+  <title>Submit Meme</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+  <style>
+    body {
+      background-color: #222;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    input {
+      margin: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <h1>Submit Your Meme</h1>
-  <input type="text" id="meme-url" placeholder="Enter meme URL" style="width: 80%;" />
-  <button id="submit-button">Submit Meme</button>
+  <input type="file" id="fileInput" accept="image/*" />
+  <button id="uploadBtn">Upload Meme</button>
+
+  <script>
+    // Firebase configuration (reuse the same config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    // Handle file upload
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const storageRef = storage.ref('meems/' + file.name);
+        await storageRef.put(file);
+        alert('Meme uploaded successfully!');
+      } else {
+        alert('Please select a file to upload.');
+      }
+    });
+  </script>
 </body>
 </html>
