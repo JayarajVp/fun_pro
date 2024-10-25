@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Like System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #imagesContainer img {
+            width: 200px; /* Set width to prevent overflow */
+            margin: 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+        }
+        .like-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 10px 0;
+        }
+        .like-btn {
+            margin-right: 10px;
+            padding: 5px 10px;
+            background-color: #4CAF50; /* Green */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+    <!-- Include Firebase libraries -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getStorage, ref, listAll, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
+            authDomain: "funpro-826c4.firebaseapp.com",
+            databaseURL: "https://funpro-826c4-default-rtdb.firebaseio.com",
+            projectId: "funpro-826c4",
+            storageBucket: "funpro-826c4.appspot.com",
+            messagingSenderId: "402693921355",
+            appId: "1:402693921355:web:e4bd636815173a26cd8bce",
+            measurementId: "G-H5D83MFWMG"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const storage = getStorage(app);
+
+        // Fetch images from Firebase Storage
+        async function fetchImages() {
+            const storageRef = ref(storage, 'meems/'); // Adjust the path according to your storage structure
+            const res = await listAll(storageRef);
+            const memeData = await Promise.all(res.items.map(async (itemRef) => {
+                const url = await getDownloadURL(itemRef);
+                return { url: url, likes: 0 };
+            }));
+            displayImages(memeData);
+        }
+
+        function displayImages(memeData) {
+            const imagesContainer = document.getElementById('imagesContainer');
+            imagesContainer.innerHTML = ''; // Clear previous images
+            memeData.forEach((meme, index) => {
+                const imgContainer = document.createElement('div');
+                imgContainer.classList.add('like-container');
+
+                const img = document.createElement('img');
+                img.src = meme.url;
+
+                const likeBtn = document.createElement('button');
+                likeBtn.className = 'like-btn';
+                likeBtn.textContent = 'Like';
+                likeBtn.addEventListener('click', () => {
+                    meme.likes += 1; // Increase like count
+                    updateLikes(index, meme.likes); // Update displayed likes
+                });
+
+                const likeCount = document.createElement('span');
+                likeCount.id = `likeCount${index}`; // Unique ID for each like count
+                likeCount.textContent = meme.likes;
+
+                imgContainer.appendChild(img);
+                imgContainer.appendChild(likeBtn);
+                imgContainer.appendChild(likeCount);
+                imagesContainer.appendChild(imgContainer);
+            });
+        }
+
+        function updateLikes(index, likes) {
+            const likeCountElement = document.getElementById(`likeCount${index}`);
+            likeCountElement.textContent = likes; // Update the displayed like count
+        }
+
+        // Call the function to fetch and display images when the page loads
+        fetchImages();
+    </script>
+</head>
+<body>
+    <h1>Meme Like System</h1>
+    <div id="imagesContainer"></div>
+</body>
+</html>
