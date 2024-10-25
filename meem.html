@@ -5,11 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Meme Challenge</title>
   <script type="module">
-    // Import the Firebase SDKs
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
 
-    // Firebase configuration
     const firebaseConfig = {
       apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
       authDomain: "funpro-826c4.firebaseapp.com",
@@ -21,35 +19,31 @@
       measurementId: "G-H5D83MFWMG"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getDatabase(app);
 
-    // Fetch 5 random images from Firebase Realtime Database
-    async function getRandomImages() {
-      const snapshot = await get(ref(db, 'images'));
-      const allImages = snapshot.val();
-      const urls = Object.values(allImages);
+    function loadImages() {
+      const imagesRef = ref(db, 'images');
+      onValue(imagesRef, (snapshot) => {
+        const allImages = snapshot.val();
+        const urls = Object.values(allImages);
 
-      // Shuffle and select 5 random images
-      const randomImages = urls.sort(() => 0.5 - Math.random()).slice(0, 5);
-      const container = document.getElementById('images-container');
-      container.innerHTML = ''; // Clear previous content
+        const randomImages = urls.sort(() => 0.5 - Math.random()).slice(0, 5);
+        const container = document.getElementById('images-container');
+        container.innerHTML = '';
 
-      // Display the images
-      randomImages.forEach(url => {
-        const img = document.createElement('img');
-        img.src = url;
-        img.width = 200;
-        img.style.margin = '10px';
-        container.appendChild(img);
+        randomImages.forEach(url => {
+          const img = document.createElement('img');
+          img.src = url;
+          img.width = 200;
+          img.style.margin = '10px';
+          container.appendChild(img);
+        });
       });
     }
 
-    // Load images on page load
-    window.onload = getRandomImages;
+    window.onload = loadImages;
 
-    // Open first image in Canva for editing
     document.getElementById('ready-button').addEventListener('click', () => {
       const firstImage = document.querySelector('#images-container img');
       if (firstImage) {
