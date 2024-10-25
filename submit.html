@@ -4,8 +4,43 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Submit Meme</title>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-analytics.js";
+    import { getStorage, ref, uploadBytes } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
+      authDomain: "funpro-826c4.firebaseapp.com",
+      databaseURL: "https://funpro-826c4-default-rtdb.firebaseio.com",
+      projectId: "funpro-826c4",
+      storageBucket: "funpro-826c4.appspot.com",
+      messagingSenderId: "402693921355",
+      appId: "1:402693921355:web:e4bd636815173a26cd8bce",
+      measurementId: "G-H5D83MFWMG"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
+    const storage = getStorage(app);
+
+    // Handle file upload
+    document.getElementById('uploadBtn').addEventListener('click', async () => {
+      const fileInput = document.getElementById('fileInput');
+      const file = fileInput.files[0];
+
+      if (file) {
+        const storageRef = ref(storage, 'meems/' + file.name);
+        await uploadBytes(storageRef, file);
+        alert('Meme uploaded successfully!');
+      } else {
+        alert('Please select a file to upload.');
+      }
+    });
+  </script>
   <style>
     body {
       background-color: #222;
@@ -27,35 +62,5 @@
   <h1>Submit Your Meme</h1>
   <input type="file" id="fileInput" accept="image/*" />
   <button id="uploadBtn">Upload Meme</button>
-
-  <script>
-    // Firebase configuration (reuse the same config)
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    const app = firebase.initializeApp(firebaseConfig);
-    const storage = firebase.storage();
-
-    // Handle file upload
-    document.getElementById('uploadBtn').addEventListener('click', async () => {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
-
-      if (file) {
-        const storageRef = storage.ref('meems/' + file.name);
-        await storageRef.put(file);
-        alert('Meme uploaded successfully!');
-      } else {
-        alert('Please select a file to upload.');
-      }
-    });
-  </script>
 </body>
 </html>
