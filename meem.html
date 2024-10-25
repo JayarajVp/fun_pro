@@ -3,64 +3,99 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Meme Challenge</title>
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
-    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
-      authDomain: "funpro-826c4.firebaseapp.com",
-      databaseURL: "https://funpro-826c4-default-rtdb.firebaseio.com",
-      projectId: "funpro-826c4",
-      storageBucket: "funpro-826c4.appspot.com",
-      messagingSenderId: "402693921355",
-      appId: "1:402693921355:web:e4bd636815173a26cd8bce",
-      measurementId: "G-H5D83MFWMG"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
-
-    // Function to download an image by URL
-    async function downloadImage(url) {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = url.split('/').pop(); // Use image name from URL
-      link.click();
+  <title>Meme Generator</title>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js"></script>
+  <style>
+    body {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
     }
-
-    // Start editing: Download 5 random images and open Canva
-    async function startEditing() {
-      const imagesRef = ref(db, 'images');
-
-      onValue(imagesRef, async (snapshot) => {
-        const allImages = snapshot.val();
-        const urls = Object.values(allImages);
-
-        // Select 5 random images
-        const randomImages = urls.sort(() => 0.5 - Math.random()).slice(0, 5);
-
-        // Download each image
-        for (const url of randomImages) {
-          await downloadImage(url);
-        }
-
-        // Open Canva photo editor
-        window.open('https://www.canva.com/photo-editor', '_blank');
-      });
+    .images {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin: 20px;
     }
-
-    // Attach event listener to the button
-    window.onload = () => {
-      document.getElementById('start-button').addEventListener('click', startEditing);
-    };
-  </script>
+    img {
+      max-width: 200px;
+      border: 2px solid white;
+      border-radius: 8px;
+    }
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-  <h1>Create Your Meme Challenge</h1>
-  <button id="start-button">Start Editing</button>
+  <h1>Meme Generator</h1>
+  <div class="images" id="imagesContainer"></div>
+  <button id="downloadBtn">Download All Images</button>
+  <button id="readyBtn">Ready to Edit</button>
+
+  <script>
+    // Firebase configuration (replace with your Firebase project's config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+    
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const storage = firebase.storage();
+
+    // Fetch 5 random images from Firebase Storage
+    async function getRandomImages() {
+      const container = document.getElementById('imagesContainer');
+      const storageRef = storage.ref('images/');
+      const res = await storageRef.listAll();
+      const files = res.items;
+
+      // Randomly select 5 images
+      const selectedFiles = [];
+      while (selectedFiles.length < 5) {
+        const randomFile = files[Math.floor(Math.random() * files.length)];
+        if (!selectedFiles.includes(randomFile)) {
+          selectedFiles.push(randomFile);
+        }
+      }
+
+      for (const file of selectedFiles) {
+        const url = await file.getDownloadURL();
+        const img = document.createElement('img');
+        img.src = url;
+        container.appendChild(img);
+      }
+    }
+
+    // Call the function to load images
+    getRandomImages();
+
+    // Download all displayed images
+    document.getElementById('downloadBtn').addEventListener('click', () => {
+      const images = document.querySelectorAll('#imagesContainer img');
+      images.forEach((img, index) => {
+        const a = document.createElement('a');
+        a.href = img.src;
+        a.download = `image_${index + 1}.jpg`;
+        a.click();
+      });
+    });
+
+    // Redirect to Canva
+    document.getElementById('readyBtn').addEventListener('click', () => {
+      window.open('https://www.canva.com/', '_blank');
+    });
+  </script>
 </body>
 </html>
