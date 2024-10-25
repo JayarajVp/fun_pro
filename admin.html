@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upload Image URLs</title>
+  <script type="module">
+    // Import Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAihPJm4YQECGK2f2sY-yTwNNDc3jTh4CM",
+      authDomain: "funpro-826c4.firebaseapp.com",
+      databaseURL: "https://funpro-826c4-default-rtdb.firebaseio.com",
+      projectId: "funpro-826c4",
+      storageBucket: "funpro-826c4.appspot.com",
+      messagingSenderId: "402693921355",
+      appId: "1:402693921355:web:e4bd636815173a26cd8bce",
+      measurementId: "G-H5D83MFWMG"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Handle image URL submission
+    document.getElementById('upload-button').addEventListener('click', async () => {
+      const imageUrl = document.getElementById('image-url').value;
+
+      if (imageUrl) {
+        try {
+          await push(ref(db, 'images'), imageUrl);
+          alert('Image URL uploaded successfully!');
+          document.getElementById('image-url').value = ''; // Clear input field
+        } catch (error) {
+          console.error('Error uploading image URL:', error);
+          alert('Failed to upload image URL. Please try again.');
+        }
+      } else {
+        alert('Please enter a valid image URL.');
+      }
+    });
+  </script>
+</head>
+<body>
+  <h1>Upload Image URLs</h1>
+  <input type="text" id="image-url" placeholder="Enter image URL" style="width: 80%;" />
+  <button id="upload-button">Upload</button>
+</body>
+</html>
